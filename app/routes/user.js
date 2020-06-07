@@ -20,4 +20,7 @@ router.patch('/:id', userController.update)
 // 删
 router.delete('/:id', userController.delete)
 
+// 登录
+router.post('/login', userController.login)
+
 module.exports = router

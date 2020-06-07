@@ -1,4 +1,7 @@
+const jwt = require('jsonwebtoken')
+
 const UserModel = require('../models/user')
+const { privateKey } = require('../config')
 
 class User {
   async list (ctx) {
@@ -13,6 +16,7 @@ class User {
     ctx.body = user
   }
 
+  // 注册用户
   async create (ctx) {
     ctx.verifyParams({
       name: { type: 'string', required: true },
@@ -20,7 +24,6 @@ class User {
     })
     const { name } = ctx.request.body
     const existUser = await UserModel.findOne({ name })
-    console.log(existUser)
     if (existUser) ctx.throw(409, '用户名已存在')
 
     const user = await new UserModel(ctx.request.body).save()
@@ -49,6 +52,23 @@ class User {
       ctx.throw(404, '用户不存在')
     }
     ctx.body = user
+  }
+
+  async login (ctx) {
+    ctx.verifyParams({
+      name: { type: 'string', required: true },
+      password: { type: 'string', required: true }
+    })
+    const user = await UserModel.findOne(ctx.request.body)
+    if (!user) ctx.throw(401, '用户名或密码不正确')
+
+    const { _id, name } = user
+    const token = jwt.sign({
+      _id, name
+    }, privateKey, {
+      expiresIn: '30d'
+    })
+    ctx.body = { token }
   }
 }
 
