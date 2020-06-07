@@ -5,22 +5,19 @@ const router = new Router({
 });
 const userController = require('../controllers/user')
 
-// const auth = async (ctx, next) => {
-//   // if (ctx.url !== '/users') {
-//   //   ctx.throw(401)
-//   // }
-//   await next()
-// }
-
 router.get('/', userController.list)
 
+// 查
 router.get('/:id', userController.query)
 
+// 增
 router.post('/', userController.create);
 
-// 修改
-router.put('/', userController.update)
+// 改
+// put => 全部替换； patch => 部分替换
+router.patch('/:id', userController.update)
 
+// 删
 router.delete('/:id', userController.delete)
 
 module.exports = router
