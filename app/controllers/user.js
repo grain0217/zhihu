@@ -16,8 +16,13 @@ class User {
   async create (ctx) {
     ctx.verifyParams({
       name: { type: 'string', required: true },
-      age: { type: 'number', required: false }
+      password: { type: 'string', required: true }
     })
+    const { name } = ctx.request.body
+    const existUser = await UserModel.findOne({ name })
+    console.log(existUser)
+    if (existUser) ctx.throw(409, '用户名已存在')
+
     const user = await new UserModel(ctx.request.body).save()
     ctx.body = user
   }
@@ -37,7 +42,7 @@ class User {
   async update (ctx) {
     ctx.verifyParams({
       name: { type: 'string', required: true },
-      age: { type: 'number', required: false }
+      password: { type: 'string', required: true }
     })
     const user = UserModel.findByIdAndUpdate(ctx.params.id, ctx.request.body)
     if (!user) {
