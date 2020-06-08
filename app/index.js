@@ -8,7 +8,7 @@ const App = new Koa();
 const routering = require('./routes');
 
 const mongoose = require('mongoose')
-
+mongoose.set('useFindAndModify', false)
 mongoose.connect(connectionStr, { useNewUrlParser: true },
   () => {
     console.log('mongodb 连接成功')

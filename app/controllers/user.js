@@ -26,6 +26,7 @@ class User {
     const existUser = await UserModel.findOne({ name })
     if (existUser) ctx.throw(409, '用户名已存在')
 
+    // 密码加密待处理
     const user = await new UserModel(ctx.request.body).save()
     ctx.body = user
   }
@@ -47,7 +48,7 @@ class User {
       name: { type: 'string', required: true },
       password: { type: 'string', required: true }
     })
-    const user = UserModel.findByIdAndUpdate(ctx.params.id, ctx.request.body)
+    const user = await UserModel.findByIdAndUpdate(ctx.params.id, ctx.request.body)
     if (!user) {
       ctx.throw(404, '用户不存在')
     }
@@ -59,6 +60,7 @@ class User {
       name: { type: 'string', required: true },
       password: { type: 'string', required: true }
     })
+    // 密码明文存储？
     const user = await UserModel.findOne(ctx.request.body)
     if (!user) ctx.throw(401, '用户名或密码不正确')
 

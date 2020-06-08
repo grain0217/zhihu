@@ -16,7 +16,7 @@ const userSchema = new Schema({
     type: String,
     required: true,
     // 查询隐藏密码
-    // select: false,
+    select: false,
   }
 }, 
 // 禁用文档版本，设置无效？？
@@ -26,3 +26,4 @@ const userSchema = new Schema({
 )
 
 module.exports = model('User', userSchema)
+ 
