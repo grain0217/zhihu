@@ -72,6 +72,13 @@ class User {
     })
     ctx.body = { token }
   }
+
+  // 授权
+  async checkOwner (ctx, next) {
+    // 权限限制
+    if (ctx.params.id !== ctx.state.user._id) {}
+    await next()
+  }
 }
 
 module.exports = new User()
