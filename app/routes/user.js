@@ -1,4 +1,5 @@
-const jwt = require('jsonwebtoken')
+// const jwt = require('jsonwebtoken')
+const jwt = require('koa-jwt')
 const { privateKey } = require('../config')
 const Router = require('koa-router');
 
@@ -8,17 +9,21 @@ const router = new Router({
 
 const userController = require('../controllers/user')
 
-const auth = async (ctx, next) => {
-  const { authorization = '' } = ctx.request.header
-  const token = authorization.replace('Bearer ', '')
-  try {
-    const user = jwt.verify(token, privateKey)
-    ctx.state.user = user
-  } catch (err) {
-    ctx.throw(401, err.message)
-  }
-  await next()
-}
+// 用户认证
+// const auth = async (ctx, next) => {
+//   const { authorization = '' } = ctx.request.header
+//   const token = authorization.replace('Bearer ', '')
+//   try {
+//     const user = jwt.verify(token, privateKey)
+//     ctx.state.user = user
+//   } catch (err) {
+//     ctx.throw(401, err.message)
+//   }
+//   await next()
+// }
+
+// 使用koa-jwt做用户认证
+const auth = jwt({ secret: privateKey })
 
 router.get('/', userController.list)
 
