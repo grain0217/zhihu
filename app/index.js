@@ -1,9 +1,9 @@
 const Koa = require('koa');
-const Router = require('koa-router');
-const bodyParser = require('koa-bodyparser');
+const koaBody = require('koa-body');
 const error = require('koa-json-error')
 const parameter = require('koa-parameter')
 const App = new Koa();
+const path = require('path')
 const routering = require('./routes');
 
 require('./connect')
@@ -18,7 +18,13 @@ App.use(error({
   }
 }))
 
-App.use(bodyParser());
+App.use(koaBody({
+  multipart: true,
+  formidable: {
+    uploadDir: path.join(__dirname, '/public/uploads'),
+    keepExtensions: true
+  }
+})); 
 
 // 参数校验中间件
 App.use(parameter(App))
