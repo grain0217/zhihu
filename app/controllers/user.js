@@ -45,8 +45,16 @@ class User {
 
   async update (ctx) {
     ctx.verifyParams({
-      name: { type: 'string', required: true },
-      password: { type: 'string', required: true }
+      name: { type: 'string', required: false },
+      password: { type: 'string', required: false },
+      avatar_url: { type: 'string' },
+      gender: { type: 'string' },
+      headline: { type: 'string' },
+      locations: { type: 'array', itemType: 'string' },
+      profession: { type: 'string' },
+      careerExperience: { type: 'array', itemType: 'object' },
+      educationExperience: { type: 'array', item: 'object' },
+      profile: { type: 'string' }
     })
     const user = await UserModel.findByIdAndUpdate(ctx.params.id, ctx.request.body)
     if (!user) {
