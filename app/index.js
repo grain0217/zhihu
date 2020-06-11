@@ -31,7 +31,7 @@ App.use(koaBody({
   }
 })); 
 
-// 参数校验中间件
+// 参数校验中间件 ctx.verifyParams
 App.use(parameter(App))
 
 // 注册路由
