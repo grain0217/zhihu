@@ -9,7 +9,10 @@ class User {
   }
 
   async query (ctx) {
-    const user = await UserModel.findById(ctx.params.id)
+    const { fields } = ctx.query
+    const selectedFields = fields.split(';').filter(f => f).map(f => ` +${f}`).join('')
+    // select 追加隐藏字段
+    const user = await UserModel.findById(ctx.params.id).select(selectedFields)
     if (!user) {
       ctx.throw(404, '用户不存在')
     }
