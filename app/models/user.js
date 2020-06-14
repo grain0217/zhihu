@@ -13,13 +13,19 @@ const userSchema = new Schema({
     select: false,
   },
   avatar_url: { type: String },
-  gender: { type: String, enum: ['male', 'female'], default: 'male', required: true },
+  gender: {
+    type: String,
+    enum: ['male', 'female'],
+    default: 'male',
+    required: true,
+    select: false
+  },
 
   // 一句话介绍
   headline: { type: String },
 
   // 居住地
-  locations: { type: [ { type: String } ] },
+  locations: { type: [ { type: String } ], select: false },
 
   // 所在行业
   profession: { type: String },
@@ -31,7 +37,8 @@ const userSchema = new Schema({
         company: { type: String},
         job: { type: String }
       }
-    ]
+    ],
+    select: false
   },
 
   // 教育经历
@@ -44,11 +51,21 @@ const userSchema = new Schema({
         startTime: { type: Number },
         endTime: { type: Number }
       }
-    ]
+    ],
+    select: false
   },
 
   // 个人简介
-  profile: { type: String }
+  profile: { type: String, select: false },
+
+  // 关注
+  following: {
+    type: [{
+      type: Schema.Types.ObjectId,
+      ref: 'User'
+    }],
+    select: false
+  }
 }, 
 // 禁用文档版本，设置无效？？
 // {
