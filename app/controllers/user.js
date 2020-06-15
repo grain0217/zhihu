@@ -1,9 +1,11 @@
 const jwt = require('jsonwebtoken')
 
+const mongoose = require('mongoose');
+
 const UserModel = require('../models/user')
 const { privateKey } = require('../config')
 
-class User {
+class UserCtl {
   // 用户列表
   async list (ctx) {
     ctx.body = await UserModel.find()
@@ -130,6 +132,18 @@ class User {
       code: 200,
     }
   }
+
+  async checkUserExist (ctx, next) {
+    const isValid = mongoose.Types.ObjectId.isValid(ctx.params.id)
+    if (!isValid) {
+      ctx.throw(500, '用户不存在')
+    }
+    const user = await UserModel.findById(ctx.params.id)
+    if (!user) {
+      ctx.throw(500, '用户不存在')
+    }
+    await next()
+  }
 }
 
-module.exports = new User()
+module.exports = new UserCtl()

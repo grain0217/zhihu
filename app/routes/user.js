@@ -28,15 +28,12 @@ const auth = jwt({ secret: privateKey })
 router.get('/', userController.list)
 
 // 查
-router.get('/:id', userController.query)
-
+router.get('/:id', userController.checkUserExist, userController.query)
 // 增
 router.post('/', userController.create);
-
 // 改
 // put => 全部替换； patch => 部分替换
-router.patch('/:id', auth, userController.update)
-
+router.patch('/:id', auth, userController.checkUserExist, userController.update)
 // 删
 router.delete('/:id', auth, userController.delete)
 
@@ -44,14 +41,13 @@ router.delete('/:id', auth, userController.delete)
 router.post('/login', userController.login)
 
 // 关注列表
-router.get('/:id/following', userController.followingList)
-
+router.get('/:id/following', userController.checkUserExist, userController.followingList)
 // 获取粉丝
-router.get('/:id/follower', userController.followerList)
+router.get('/:id/follower', userController.checkUserExist, userController.followerList)
 
 // 关注
-router.put('/follow/:id', auth, userController.follow)
-
-router.put('/unfollow/:id', auth, userController.unfollow)
+router.put('/follow/:id', auth, userController.checkUserExist, userController.follow)
+// 取关
+router.put('/unfollow/:id', auth, userController.checkUserExist ,userController.unfollow)
 
 module.exports = router
