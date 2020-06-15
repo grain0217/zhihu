@@ -43,4 +43,10 @@ router.delete('/:id', auth, userController.delete)
 // 登录
 router.post('/login', userController.login)
 
+// 关注列表
+router.get('/:id/following', userController.followingList)
+
+// 关注
+router.put('/follow/:id', auth, userController.follow)
+
 module.exports = router

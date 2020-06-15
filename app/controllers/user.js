@@ -4,12 +4,14 @@ const UserModel = require('../models/user')
 const { privateKey } = require('../config')
 
 class User {
+  // 用户列表
   async list (ctx) {
     ctx.body = await UserModel.find()
   }
 
+  // 查询具体用户
   async query (ctx) {
-    const { fields } = ctx.query
+    const { fields = '' } = ctx.query
     const selectedFields = fields.split(';').filter(f => f).map(f => ` +${f}`).join('')
     // select 追加隐藏字段
     const user = await UserModel.findById(ctx.params.id).select(selectedFields)
@@ -89,6 +91,25 @@ class User {
     // 权限限制
     if (ctx.params.id !== ctx.state.user._id) {}
     await next()
+  }
+
+  // 关注列表
+  // ref + populate 填充查询
+  async followingList (ctx) {
+    const user = await UserModel.findById(ctx.params.id).select('+following').populate('following')
+    ctx.body = user.following
+  }
+
+  // 添加关注
+  async follow (ctx) {
+    const me = await UserModel.findById(ctx.state.user._id).select('+following')
+    if (!me.following.map(id => id.toString()).includes(ctx.params.id)) {
+      me.following.push(ctx.params.id)
+      me.save()
+    }
+    ctx.body = {
+      code: 200,
+    }
   }
 }
 
