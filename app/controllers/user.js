@@ -100,11 +100,30 @@ class User {
     ctx.body = user.following
   }
 
+  // 粉丝列表
+  async followerList (ctx) {
+    const users = await UserModel.find({ following: ctx.params.id })
+    ctx.body = users
+  }
+
   // 添加关注
   async follow (ctx) {
     const me = await UserModel.findById(ctx.state.user._id).select('+following')
     if (!me.following.map(id => id.toString()).includes(ctx.params.id)) {
       me.following.push(ctx.params.id)
+      me.save()
+    }
+    ctx.body = {
+      code: 200,
+    }
+  }
+
+  // 取消关注
+  async unfollow (ctx) {
+    const me = await UserModel.findById(ctx.state.user._id).select('+following')
+    const index = me.following.map(id => id.toString()).indexOf(ctx.params.id)
+    if (index > -1) {
+      me.following.splice(index, 1)
       me.save()
     }
     ctx.body = {

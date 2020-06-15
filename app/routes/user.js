@@ -46,7 +46,12 @@ router.post('/login', userController.login)
 // 关注列表
 router.get('/:id/following', userController.followingList)
 
+// 获取粉丝
+router.get('/:id/follower', userController.followerList)
+
 // 关注
 router.put('/follow/:id', auth, userController.follow)
+
+router.put('/unfollow/:id', auth, userController.unfollow)
 
 module.exports = router
