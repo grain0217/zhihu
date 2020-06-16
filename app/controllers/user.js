@@ -8,7 +8,13 @@ const { privateKey } = require('../config')
 class UserCtl {
   // 用户列表
   async list (ctx) {
-    ctx.body = await UserModel.find()
+    const { pageSize = 10, pageNo = 1 } = ctx.query
+    const skip = (pageNo - 1) * pageSize
+    const users = await UserModel.find().limit(+pageSize).skip(skip)
+    ctx.body = {
+      status: 200,
+      data: users
+    }
   }
 
   // 查询具体用户
