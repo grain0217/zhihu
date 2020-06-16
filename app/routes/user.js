@@ -22,7 +22,7 @@ const userController = require('../controllers/user')
 //   await next()
 // }
 
-// 使用koa-jwt做用户认证
+// 使用koa-jwt做用户认证，需要登录
 const auth = jwt({ secret: privateKey })
 
 router.get('/', userController.list)

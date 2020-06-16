@@ -17,9 +17,6 @@ class UserCtl {
     const selectedFields = fields.split(';').filter(f => f).map(f => ` +${f}`).join('')
     // select 追加隐藏字段
     const user = await UserModel.findById(ctx.params.id).select(selectedFields)
-    if (!user) {
-      ctx.throw(404, '用户不存在')
-    }
     ctx.body = user
   }
 
@@ -39,14 +36,10 @@ class UserCtl {
   }
 
   async delete (ctx) {
-    const user = await UserModel.findByIdAndRemove(ctx.params.id)
-    if (!user) {
-      ctx.throw(404, '用户不存在')
-    } else {
-      ctx.body = {
-        success: true,
-        msg: '删除成功'
-      }
+    await UserModel.findByIdAndRemove(ctx.params.id)
+    ctx.body = {
+      success: true,
+      msg: '删除成功'
     }
   }
 
@@ -63,10 +56,7 @@ class UserCtl {
       educationExperience: { type: 'array', item: 'object' },
       profile: { type: 'string' }
     })
-    const user = await UserModel.findByIdAndUpdate(ctx.params.id, ctx.request.body)
-    if (!user) {
-      ctx.throw(404, '用户不存在')
-    }
+    await UserModel.findByIdAndUpdate(ctx.params.id, ctx.request.body)
     ctx.body = user
   }
 
@@ -116,7 +106,7 @@ class UserCtl {
       me.save()
     }
     ctx.body = {
-      code: 200,
+      status: 200,
     }
   }
 
@@ -129,7 +119,7 @@ class UserCtl {
       me.save()
     }
     ctx.body = {
-      code: 200,
+      status: 200,
     }
   }
 
