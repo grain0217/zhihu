@@ -28,7 +28,7 @@ const auth = jwt({ secret: privateKey })
 router.get('/', userController.list)
 
 // 查
-router.get('/:id', userController.checkUserExist, userController.query)
+router.get('/:id', userController.checkUserExist, userController.queryById)
 // 增
 router.post('/', userController.create);
 // 改

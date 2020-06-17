@@ -25,17 +25,32 @@ const userSchema = new Schema({
   headline: { type: String },
 
   // 居住地
-  locations: { type: [ { type: String } ], select: false },
+  locations: {
+    type:  [{
+      type: Schema.Types.ObjectId,
+      ref: 'Topic'
+    }],
+    select: false 
+  },
 
   // 所在行业
-  profession: { type: String },
+  profession: {
+    type: Schema.Types.ObjectId,
+    ref: 'Topic'
+  },
 
   // 职业经历
   careerExperience: {
     type: [
       {
-        company: { type: String},
-        job: { type: String }
+        company: {
+          type: Schema.Types.ObjectId,
+          ref: 'Topic'
+        },
+        job: {
+          type: Schema.Types.ObjectId,
+          ref: 'Topic'
+        }
       }
     ],
     select: false
@@ -45,9 +60,15 @@ const userSchema = new Schema({
   educationExperience: {
     type: [
       {
-        school: { type: String},
-        major: { type: String },
-        diploma: { type: String },
+        school: {
+          type: Schema.Types.ObjectId,
+          ref: 'Topic'
+        },
+        major: {
+          type: Schema.Types.ObjectId,
+          ref: 'Topic'
+        },
+        diploma: { type: Number, enum: [1, 2, 3, 4, 5] },
         startTime: { type: Number },
         endTime: { type: Number }
       }

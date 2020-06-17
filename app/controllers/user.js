@@ -3,7 +3,8 @@ const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose');
 
 const UserModel = require('../models/user')
-const { privateKey } = require('../config')
+const { privateKey } = require('../config');
+const { use } = require('../routes/topic');
 
 class UserCtl {
   // 用户列表
@@ -20,12 +21,28 @@ class UserCtl {
   }
 
   // 查询具体用户
-  async query (ctx) {
+  async queryById (ctx) {
     const { fields = '' } = ctx.query
     const selectedFields = fields.split(';').filter(f => f).map(f => ` +${f}`).join('')
+
+    const populateStr = fields.split(';').filter(f => f).map(f => {
+      if (f === 'careerExperience') {
+        return 'careerExperience.company careerExperience.job'
+      } else if (f === 'educationExperience') {
+        return 'educationExperience.school educationExperience.major educationExperience.diploma'
+      } else {
+        return f
+      }
+    }).join(' ')
+
     // select 追加隐藏字段
-    const user = await UserModel.findById(ctx.params.id).select(selectedFields)
-    ctx.body = user
+    const user = await UserModel.findById(ctx.params.id)
+      .select(selectedFields)
+      .populate(populateStr)
+    ctx.body = {
+      status: 200,
+      data: user
+    }
   }
 
   // 注册用户
@@ -64,8 +81,11 @@ class UserCtl {
       educationExperience: { type: 'array', item: 'object' },
       profile: { type: 'string' }
     })
-    await UserModel.findByIdAndUpdate(ctx.params.id, ctx.request.body)
-    ctx.body = user
+    const user = await UserModel.findByIdAndUpdate(ctx.params.id, ctx.request.body)
+    ctx.body = {
+      status: 200,
+      data: user
+    }
   }
 
   async login (ctx) {
@@ -96,7 +116,7 @@ class UserCtl {
   // 关注列表
   // ref + populate 填充查询
   async followingList (ctx) {
-    const user = await UserModel.findById(ctx.params.id).select('+following').populate('following')
+    const user = await UserModel.findById(ctx.params.id).populate('following')
     ctx.body = user.following
   }
 
