@@ -4,7 +4,9 @@ class TopicCtl {
   async list (ctx) {
     const { pageNo = 1, pageSize = 10 } = ctx.query
     const skip = (pageNo - 1) * pageSize
-    const topics = await TopicModel.find().limit(+pageSize).skip(skip)
+    const topics = await TopicModel
+      .find({ name: new RegExp(ctx.query.q) })
+      .limit(+pageSize).skip(skip)
     ctx.body = {
       status: 200,
       data: topics,

@@ -10,7 +10,9 @@ class UserCtl {
   async list (ctx) {
     const { pageSize = 10, pageNo = 1 } = ctx.query
     const skip = (pageNo - 1) * pageSize
-    const users = await UserModel.find().limit(+pageSize).skip(skip)
+    const users = await UserModel
+      .find({ name: new RegExp(ctx.query.q) })
+      .limit(+pageSize).skip(skip)
     ctx.body = {
       status: 200,
       data: users
