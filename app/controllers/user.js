@@ -125,7 +125,10 @@ class UserCtl {
   // 粉丝列表
   async followerList (ctx) {
     const users = await UserModel.find({ following: ctx.params.id })
-    ctx.body = users
+    ctx.body = {
+      status: 200,
+      data: users
+    }
   }
 
   // 关注的话题列表

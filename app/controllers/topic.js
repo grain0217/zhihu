@@ -58,7 +58,7 @@ class TopicCtl {
     }
   }
 
-  async followTopic (ctx) {
+  async follow (ctx) {
     const me = await UserModel.findById(ctx.state.user._id).select('+followingTopics')
     if (!me.followingTopics.map(t => t.toString()).includes(ctx.params.id)) {
       me.followingTopics.push(ctx.params.id)
@@ -69,7 +69,7 @@ class TopicCtl {
     }
   }
 
-  async unfollowTopic (ctx) {
+  async unfollow (ctx) {
     const user = await UserModel.findById(ctx.state.user._id).select('+followingTopics')
     const index = user.followingTopics.indexOf(ctx.params.id)
     if (index > -1) {
@@ -78,6 +78,15 @@ class TopicCtl {
     }
     ctx.body = {
       status: 200
+    }
+  }
+
+  // 话题关注者
+  async follower (ctx) {
+    const follower = await UserModel.find({ followingTopics: ctx.params.id })
+    ctx.body = {
+      status: 200,
+      data: follower
     }
   }
 
