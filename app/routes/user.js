@@ -40,14 +40,17 @@ router.delete('/:id', auth, userController.delete)
 // 登录
 router.post('/login', userController.login)
 
-// 关注列表
+// 具体用户的关注列表
 router.get('/:id/following', userController.checkUserExist, userController.followingList)
-// 获取粉丝
+// 具体用户的粉丝列表
 router.get('/:id/follower', userController.checkUserExist, userController.followerList)
 
-// 关注
+// 关注知乎er
 router.put('/follow/:id', auth, userController.checkUserExist, userController.follow)
-// 取关
-router.put('/unfollow/:id', auth, userController.checkUserExist ,userController.unfollow)
+// 取关知乎er
+router.put('/unfollow/:id', auth, userController.checkUserExist, userController.unfollow)
+
+// 具体用户的关注话题列表
+router.get('/topics/:id', userController.checkUserExist, userController.followingTopicList)
 
 module.exports = router

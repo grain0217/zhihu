@@ -14,8 +14,12 @@ router.get('/', topicController.list)
 
 router.post('/', auth, topicController.create)
 
-router.get('/:id', topicController.queryById)
+router.get('/:id', topicController.checkTopicExist, topicController.queryById)
 
-router.patch('/:id', auth, topicController.update)
+router.patch('/:id', auth, topicController.checkTopicExist, topicController.update)
+
+router.put('/:id/follow', auth, topicController.checkTopicExist, topicController.followTopic)
+
+router.delete('/:id/unfollow', auth, topicController.checkTopicExist, topicController.unfollowTopic)
 
 module.exports = router

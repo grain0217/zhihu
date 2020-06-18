@@ -4,7 +4,6 @@ const mongoose = require('mongoose');
 
 const UserModel = require('../models/user')
 const { privateKey } = require('../config');
-const { use } = require('../routes/topic');
 
 class UserCtl {
   // 用户列表
@@ -113,17 +112,29 @@ class UserCtl {
     await next()
   }
 
-  // 关注列表
+  // 关注的知乎er列表
   // ref + populate 填充查询
   async followingList (ctx) {
     const user = await UserModel.findById(ctx.params.id).populate('following')
-    ctx.body = user.following
+    ctx.body = {
+      status: 200,
+      data: user.following
+    }
   }
 
   // 粉丝列表
   async followerList (ctx) {
     const users = await UserModel.find({ following: ctx.params.id })
     ctx.body = users
+  }
+
+  // 关注的话题列表
+  async followingTopicList (ctx) {
+    const user = await UserModel.findById(ctx.params.id).populate('followingTopics')
+    ctx.body = {
+      status: 200,
+      data: user.followingTopics
+    }
   }
 
   // 添加关注
@@ -154,11 +165,11 @@ class UserCtl {
   async checkUserExist (ctx, next) {
     const isValid = mongoose.Types.ObjectId.isValid(ctx.params.id)
     if (!isValid) {
-      ctx.throw(500, '用户不存在')
+      ctx.throw(404, '用户不存在')
     }
     const user = await UserModel.findById(ctx.params.id)
     if (!user) {
-      ctx.throw(500, '用户不存在')
+      ctx.throw(404, '用户不存在')
     }
     await next()
   }

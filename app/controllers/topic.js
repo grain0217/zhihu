@@ -1,4 +1,7 @@
 const TopicModel = require('../models/topic')
+const UserModel = require('../models/user')
+
+const mongoose = require('mongoose');
 
 class TopicCtl {
   async list (ctx) {
@@ -53,6 +56,41 @@ class TopicCtl {
     ctx.body = {
       status: 200,
     }
+  }
+
+  async followTopic (ctx) {
+    const me = await UserModel.findById(ctx.state.user._id).select('+followingTopics')
+    if (!me.followingTopics.map(t => t.toString()).includes(ctx.params.id)) {
+      me.followingTopics.push(ctx.params.id)
+      me.save()
+    }
+    ctx.body = {
+      status: 200,
+    }
+  }
+
+  async unfollowTopic (ctx) {
+    const user = await UserModel.findById(ctx.state.user._id).select('+followingTopics')
+    const index = user.followingTopics.indexOf(ctx.params.id)
+    if (index > -1) {
+      user.followingTopics.splice(index, 1)
+      user.save()
+    }
+    ctx.body = {
+      status: 200
+    }
+  }
+
+  async checkTopicExist (ctx, next) {
+    const isValid = mongoose.Types.ObjectId.isValid(ctx.params.id)
+    if (!isValid) {
+      ctx.throw(404, '话题不存在')
+    }
+    const topic = await TopicModel.findById(ctx.params.id)
+    if (!topic) {
+      ctx.throw(404, '话题不存在~')
+    }
+    await next()
   }
 }
 

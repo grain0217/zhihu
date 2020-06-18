@@ -79,13 +79,22 @@ const userSchema = new Schema({
   // 个人简介
   profile: { type: String, select: false },
 
-  // 关注
+  // 关注的知乎er
   following: {
     type: [{
       type: Schema.Types.ObjectId,
       ref: 'User'
     }],
     select: false
+  },
+
+  // 关注的话题
+  followingTopics: {
+    type: [{
+      type: Schema.Types.ObjectId,
+      ref: 'Topic'
+    }],
+    select: false,
   }
 }, 
 // 禁用文档版本，设置无效？？
