@@ -53,4 +53,7 @@ router.put('/unfollow/:id', auth, userController.checkUserExist, userController.
 // 具体用户的关注话题列表
 router.get('/:id/topics', userController.checkUserExist, userController.followingTopicList)
 
+// 具体用户的提问
+router.get('/:id/questions', userController.checkUserExist, userController.listQuestion)
+
 module.exports = router
