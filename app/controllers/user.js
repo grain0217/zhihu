@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose');
 
 const UserModel = require('../models/user')
+const QuestionModel = require('../models/question')
 const { privateKey } = require('../config');
 
 class UserCtl {
@@ -152,6 +153,15 @@ class UserCtl {
     }
   }
 
+  // 用户的提问
+  async listQuestion (ctx) {
+    const questions = await QuestionModel.find({ questioner: ctx.params.id })
+    ctx.body = {
+      status: 200,
+      data: questions
+    }
+  }
+
   // 取消关注
   async unfollow (ctx) {
     const me = await UserModel.findById(ctx.state.user._id).select('+following')
@@ -160,20 +170,14 @@ class UserCtl {
       me.following.splice(index, 1)
       me.save()
     }
-    ctx.body = {
-      status: 200,
-    }
+    ctx.body = { status: 200 }
   }
 
   async checkUserExist (ctx, next) {
     const isValid = mongoose.Types.ObjectId.isValid(ctx.params.id)
-    if (!isValid) {
-      ctx.throw(404, '用户不存在')
-    }
+    if (!isValid) ctx.throw(404, '用户不存在')
     const user = await UserModel.findById(ctx.params.id)
-    if (!user) {
-      ctx.throw(404, '用户不存在')
-    }
+    if (!user) ctx.throw(404, '用户不存在')
     await next()
   }
 }

@@ -1,5 +1,6 @@
 const TopicModel = require('../models/topic')
 const UserModel = require('../models/user')
+const QuestionModel = require('../models/question')
 
 const mongoose = require('mongoose');
 
@@ -52,7 +53,7 @@ class TopicCtl {
       avatar_url: { type: 'string', required: false },
       introduction: { type: 'string', required: false }
     })
-    const topic = await TopicModel.findByIdAndUpdate(ctx.params.id, ctx.request.body)
+    await TopicModel.findByIdAndUpdate(ctx.params.id, ctx.request.body)
     ctx.body = {
       status: 200,
     }
