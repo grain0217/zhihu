@@ -13,7 +13,11 @@ const questionSchema = new Schema({
   },
   answerers: [
     { type: Schema.Types.ObjectId, ref: 'User' }
-  ]
+  ],
+  topics: {
+    type: [ { type: Schema.Types.ObjectId, ref: 'Topic'} ],
+    select: false,
+  }
 })
 
 module.exports = model('Question', questionSchema)

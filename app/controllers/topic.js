@@ -5,6 +5,7 @@ const QuestionModel = require('../models/question')
 const mongoose = require('mongoose');
 
 class TopicCtl {
+  // 话题列表
   async list (ctx) {
     const { pageNo = 1, pageSize = 10 } = ctx.query
     const skip = (pageNo - 1) * pageSize
@@ -20,6 +21,15 @@ class TopicCtl {
       //   pageNo,
       //   pageSize
       // }
+    }
+  }
+
+  // 话题下的问题
+  async listQuestions (ctx) {
+    const questions = await QuestionModel.find({ topics: ctx.params.id })
+    ctx.body = {
+      status: 200,
+      data: questions
     }
   }
 

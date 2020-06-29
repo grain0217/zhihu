@@ -19,7 +19,7 @@ class QuestionCtl {
   async queryById (ctx) {
     const { fields = '' } = ctx.query
     const selectedFields = fields.split(';').filter(f => f).map(f => `+${f}`).join('')
-    const question = await QuestionModel.findById(ctx.params.id).select(selectedFields).populate('questioner')
+    const question = await QuestionModel.findById(ctx.params.id).select(selectedFields).populate('questioner topics')
 
     ctx.body = {
       status: 200,
