@@ -22,6 +22,8 @@ router.put('/:id/follow', auth, topicController.checkTopicExist, topicController
 
 router.delete('/:id/unfollow', auth, topicController.checkTopicExist, topicController.unfollow)
 
-router.get('/follower/:id', topicController.checkTopicExist, topicController.follower)
+router.get('/:id/followers', topicController.checkTopicExist, topicController.followers)
+
+router.get('/:id/questions', topicController.checkTopicExist, topicController.questions)
 
 module.exports = router
