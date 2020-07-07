@@ -20,7 +20,7 @@ router.patch('/:id', auth, topicController.checkTopicExist, topicController.upda
 
 router.put('/:id/follow', auth, topicController.checkTopicExist, topicController.follow)
 
-router.delete('/:id/unfollow', auth, topicController.checkTopicExist, topicController.unfollow)
+router.put('/:id/unfollow', auth, topicController.checkTopicExist, topicController.unfollow)
 
 router.get('/:id/followers', topicController.checkTopicExist, topicController.followers)
 
