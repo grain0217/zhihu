@@ -32,7 +32,7 @@ class QuestionCtl {
       title: { type: 'string', required: true },
       description: { type: 'string', required: true }
     })
-    const question = new QuestionModel({
+    const question = await new QuestionModel({
       ...ctx.request.body,
       questioner: ctx.state.user._id
     }).save()
