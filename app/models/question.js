@@ -11,12 +11,19 @@ const questionSchema = new Schema({
     ref: 'User',
     required: true
   },
-  answerers: [
-    { type: Schema.Types.ObjectId, ref: 'User' }
-  ],
-  topics: {
-    type: [ { type: Schema.Types.ObjectId, ref: 'Topic'} ],
-    select: false,
+  // answerers: {
+  //   type: [{
+  //     type: Schema.Types.ObjectId,
+  //     ref: 'User'
+  //   }],
+  //   select: false
+  // },
+  topic: {
+    type: [{
+      type: Schema.Types.ObjectId,
+      ref: 'Topic'
+    }],
+    select: false
   }
 })
 

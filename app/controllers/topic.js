@@ -24,15 +24,6 @@ class TopicCtl {
     }
   }
 
-  // 话题下的问题
-  async listQuestions (ctx) {
-    const questions = await QuestionModel.find({ topics: ctx.params.id })
-    ctx.body = {
-      status: 200,
-      data: questions
-    }
-  }
-
   async queryById (ctx) {
     const { fields = '' } = ctx.query
     const selectedFields = fields.split(';').filter(f => f).map(f => `+${f}`).join('')
@@ -93,11 +84,20 @@ class TopicCtl {
   }
 
   // 话题关注者
-  async follower (ctx) {
-    const follower = await UserModel.find({ followingTopics: ctx.params.id })
+  async followers (ctx) {
+    const followers = await UserModel.find({ followingTopics: ctx.params.id })
     ctx.body = {
       status: 200,
-      data: follower
+      data: followers
+    }
+  }
+
+  // 话题下的问题
+  async questions (ctx) {
+    const questions = await QuestionModel.find({ topic: ctx.params.id })
+    ctx.body = {
+      status: 200,
+      data: questions
     }
   }
 
