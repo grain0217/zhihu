@@ -8,7 +8,7 @@ class AnswerCtl {
     const skip = (pageNo - 1) * pageSize
     const reg = new RegExp(ctx.query.q)
     const answers = await AnswerModel
-      .find({ content: reg, question: ctx.params.id })
+      .find({ content: reg, question: ctx.params.questionId })
       .limit(+pageSize).skip(skip)
     ctx.body = {
       status: 200,
@@ -16,6 +16,7 @@ class AnswerCtl {
     }
   }
 
+  // 寻找特定答案
   async queryById (ctx) {
     const { fields = '' } = ctx.query
     const selectedFields = fields.split(';').filter(f => f).map(f => `+${f}`).join('')
@@ -27,6 +28,7 @@ class AnswerCtl {
     }
   }
 
+  // 创建答案
   async create (ctx) {
     ctx.verifyParams({
       content: { type: 'string', required: true },
@@ -34,7 +36,7 @@ class AnswerCtl {
     const answer = await new AnswerModel({
       ...ctx.request.body,
       answerer: ctx.state.user._id,
-      question: crx.params.id
+      question: ctx.params.questionId
     }).save()
     ctx.body = {
       status: 200,
@@ -43,7 +45,20 @@ class AnswerCtl {
   }
 
   async update (ctx) {
-    
+    ctx.verifyParams({
+      content: { type: 'string', required: true },
+    })
+    await AnswerModel.findByIdAndUpdate(ctx.params.id, ctx.request.body)
+    ctx.body = {
+      status: 200
+    }
+  }
+
+  async delete (ctx) {
+    await AnswerModel.findOneAndDelete(ctx.params.id)
+    ctx.body = {
+      status: 200
+    }
   }
 
   async checkExist (ctx, next) {
@@ -51,7 +66,14 @@ class AnswerCtl {
     if (!isValid) ctx.throw(404, '答案不存在')
     const answer = await AnswerModel.findById(ctx.params.id)
     if (!answer) ctx.throw(404, '答案不存在')
-    // if (answer.question !== )
+    if (answer.question.toString() !== ctx.params.questionId) ctx.throw(404, '答案不存在')
+    await next()
+  }
+
+  // 检查调用 update接口的用户是否为回答者?????没看懂 ctx.state.anwser是什么东西？？？
+  async checkAnswer (ctx, next) {
+    const { answer } = ctx.state
+    if (answer.toString() !== ctx.state.user._id) ctx.throw(403, '没有权限')
     await next()
   }
 }
@@ -59,4 +81,3 @@ class AnswerCtl {
 
 
 module.exports = new AnswerCtl()
-``

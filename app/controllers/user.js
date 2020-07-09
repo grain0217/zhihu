@@ -87,7 +87,7 @@ class UserCtl {
       data: user
     }
   }
-
+  
   async login (ctx) {
     ctx.verifyParams({
       name: { type: 'string', required: true },
