@@ -6,7 +6,8 @@ const answerSchema = new Schema({
   __v: { type: Number, select: false },
   content: { type: String, required: true },
   answerer: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  question: { type: Schema.Types.ObjectId, ref: 'Question', required: true }
+  question: { type: Schema.Types.ObjectId, ref: 'Question', required: true },
+  voteCount: { type: Number, required: true, default: 0 }
 })
 
 module.exports = model('Answer', answerSchema)

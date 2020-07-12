@@ -66,7 +66,8 @@ class AnswerCtl {
     if (!isValid) ctx.throw(404, '答案不存在')
     const answer = await AnswerModel.findById(ctx.params.id)
     if (!answer) ctx.throw(404, '答案不存在')
-    if (answer.question.toString() !== ctx.params.questionId) ctx.throw(404, '答案不存在')
+    // 只有在删改查答案时 才检查此逻辑，赞、踩时不检查
+    if (ctx.params.questionId && answer.question.toString() !== ctx.params.questionId) ctx.throw(404, '答案不存在')
     await next()
   }
 

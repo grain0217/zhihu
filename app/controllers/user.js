@@ -4,6 +4,8 @@ const mongoose = require('mongoose');
 
 const UserModel = require('../models/user')
 const QuestionModel = require('../models/question')
+const AnswerModel = require('../models/answer')
+
 const { privateKey } = require('../config');
 
 class UserCtl {
@@ -141,6 +143,14 @@ class UserCtl {
     }
   }
 
+  async likingAnswerList (ctx) {
+    const user = await UserModel.findById(ctx.params.id).select('+likingAnswers').populate('likingAnswers')
+    ctx.body = {
+      status: 200,
+      data: user.likingAnswers
+    }
+  }
+
   // 添加关注
   async follow (ctx) {
     const me = await UserModel.findById(ctx.state.user._id).select('+following')
@@ -152,6 +162,71 @@ class UserCtl {
       status: 200,
     }
   }
+
+  // 点赞答案
+  async like (ctx, next) {
+    const me = await UserModel.findById(ctx.state.user._id).select('+likingAnswers')
+    if (!me.likingAnswers.map(id => id.toString()).includes(ctx.params.id)) {
+      me.likingAnswers.push(ctx.params.id)
+      me.save()
+      // 点赞数自增1
+      await AnswerModel.findByIdAndUpdate(ctx.params.id, { $inc: { voteCount: 1 }})
+    }
+    await next()
+    ctx.body = {
+      status: 200,
+    }
+  }
+
+  // 取消点赞答案
+  async cancelLike (ctx) {
+    const me = await UserModel.findById(ctx.state.user._id).select('+likingAnswers')
+    const index = me.likingAnswerList.map(l => l.toString()).indexOf(ctx.params.id)
+    if (index > -1) {
+      me.likingAnswerList.splice(index, 1)
+      me.save()
+      // 点赞数自增-1
+      await AnswerModel.findByIdAndUpdate(ctx.params.id, { $inc: { voteCount: -1 }})
+    }
+    ctx.body = {
+      status: 200,
+    }
+  }
+  
+  async disLikingAnswerList (ctx) {
+    const user = await UserModel.findById(ctx.params.id).select('+dislikingAnswers').populate('dislikingAnswers')
+    ctx.body = {
+      status: 200,
+      data: user.dislikingAnswers
+    }
+  }
+
+  // 踩答案
+  async dislike (ctx, next) {
+    const me = await UserModel.findById(ctx.state.user._id).select('+dislikingAnswers')
+    if (!me.dislikingAnswers.map(id => id.toString()).includes(ctx.params.id)) {
+      me.dislikingAnswers.push(ctx.params.id)
+      me.save()
+    }
+    await next()
+    ctx.body = {
+      status: 200,
+    }
+  }
+
+  // 取消踩答案
+  async cancelDislike (ctx) {
+    const me = await UserModel.findById(ctx.state.user._id).select('+dislikingAnswers')
+    const index = me.likingAnswerList.map(l => l.toString()).indexOf(ctx.params.id)
+    if (index > -1) {
+      me.dislikingAnswers.splice(index, 1)
+      me.save()
+    }
+    ctx.body = {
+      status: 200,
+    }
+  }
+
 
   // 用户的提问
   async listQuestion (ctx) {

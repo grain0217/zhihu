@@ -8,6 +8,7 @@ const router = new Router({
 });
 
 const userController = require('../controllers/user')
+const answerController = require('../controllers/answer')
 
 // 用户认证
 // const auth = async (ctx, next) => {
@@ -55,5 +56,23 @@ router.get('/:id/topics', userController.checkUserExist, userController.followin
 
 // 具体用户的提问
 router.get('/:id/questions', userController.checkUserExist, userController.listQuestion)
+
+// 用户的赞
+router.get('/:id/like', userController.checkUserExist, userController.likingAnswerList)
+
+// 点赞
+router.put('/like/:answerId', auth, answerController.checkExist, userController.like, userController.cancelDislike)
+
+// 取消赞
+router.delete('/like/:answerId', auth, answerController.checkExist, userController.cancelLike)
+
+// 用户的踩
+router.get('/:id/dislike', userController.checkUserExist, userController.disLikingAnswerList)
+
+// 踩
+router.put('/dislike/:answerId', auth, answerController.checkExist, userController.dislike, userController.cancelLike)
+
+// 取消踩
+router.delete('/dislike/:answerId', auth, answerController.checkExist, userController.cancelDislike)
 
 module.exports = router

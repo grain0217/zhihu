@@ -95,6 +95,24 @@ const userSchema = new Schema({
       ref: 'Topic'
     }],
     select: false,
+  },
+
+  // 赞过的答案
+  likingAnswers: {
+    type: [{
+      type: Schema.Types.ObjectId,
+      ref: 'Answer',
+    }],
+    select: false
+  },
+
+  // 踩过的答案
+  dislikingAnswers: {
+    type: [{
+      type: Schema.Types.ObjectId,
+      ref: 'Answer',
+    }],
+    select: false
   }
 }, 
 // 禁用文档版本，设置无效？？
