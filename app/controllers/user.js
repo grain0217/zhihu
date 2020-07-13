@@ -227,6 +227,40 @@ class UserCtl {
     }
   }
 
+  // 收藏的答案列表
+  async collectingAnswerList (ctx) {
+    const user = await UserModel.findById(ctx.state.user._id).select('+collectingAnswers').populate('collectingAnswers')
+    ctx.body = {
+      status: 200,
+      data: user.collectingAnswers
+    }
+  }
+
+  // 收藏答案
+  async collect (ctx, next) {
+    const me = await UserModel.findById(ctx.state.user._id).select('+collectingAnswers')
+    if (!me.collectingAnswers.map(id => id.toString()).includes(ctx.params.id)) {
+      me.collectingAnswers.push(ctx.params.id)
+      me.save()
+    }
+    await next()
+    ctx.body = {
+      status: 200,
+    }
+  }
+  
+  // 取消收藏答案
+  async cancelCollect (ctx) {
+    const me = await UserModel.findById(ctx.state.user._id).select('+collectingAnswers')
+    const index = me.collectingAnswers.map(l => l.toString()).indexOf(ctx.params.id)
+    if (index > -1) {
+      me.collectingAnswers.splice(index, 1)
+      me.save()
+    }
+    ctx.body = {
+      status: 200,
+    }
+  }
 
   // 用户的提问
   async listQuestion (ctx) {

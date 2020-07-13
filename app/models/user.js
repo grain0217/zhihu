@@ -113,7 +113,16 @@ const userSchema = new Schema({
       ref: 'Answer',
     }],
     select: false
-  }
+  },
+
+  // 收藏答案
+  collectingAnswers: {
+    type: [{
+      type: Schema.Types.ObjectId,
+      ref: 'Answer',
+    }],
+    select: false
+  },
 }, 
 // 禁用文档版本，设置无效？？
 // {

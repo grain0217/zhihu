@@ -75,4 +75,13 @@ router.put('/dislike/:answerId', auth, answerController.checkExist, userControll
 // 取消踩
 router.delete('/dislike/:answerId', auth, answerController.checkExist, userController.cancelDislike)
 
+// 收藏的答案
+router.get('/collect', auth, userController.collectingAnswerList)
+
+// 收藏答案
+router.post('/collect/:id', auth, answerController.checkExist, userController.collect)
+
+// 取消收藏
+router.delete('/collet/:id', auth, answerController.checkExist, userController.cancelCollect)
+
 module.exports = router
