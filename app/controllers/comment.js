@@ -5,12 +5,12 @@ const commentModel = require('../models/comment')
 class CommentCtl {
   // 答案下的评论
   async list (ctx) {
-    const { pageNo = 1, pageSize = 10 } = ctx.query
+    const { pageNo = 1, pageSize = 10, rootCommentId} = ctx.query
     const skip = (pageNo - 1) * pageSize
     const comments = await commentModel
-      .find({ question: ctx.params.questionId, answer: ctx.params.answerId })
+      .find({ question: ctx.params.questionId, answer: ctx.params.answerId, rootCommentId })
       .limit(+pageSize).skip(skip)
-      .populate('commentator')
+      .populate('commentator replyTo')
       
     ctx.body = {
       status: 200,
@@ -33,7 +33,10 @@ class CommentCtl {
   // 创建评论
   async create (ctx) {
     ctx.verifyParams({
-      content: { type: 'string', required: true }
+      content: { type: 'string', required: true },
+      // 以下为创建二级评论所需字段
+      rootCommentId: { type: 'string', required: false },
+      replyTo: { type: 'string', required: false }
     })
     const commentator = ctx.state.user._id
     const { questionId, answerId } = ctx.params
@@ -56,9 +59,6 @@ class CommentCtl {
     }
   }
 
-  // 回复评论
-  // todo
-  
   // 检查评论是否存在
   async checkExist (ctx, next) {
     const { questionId, questionId, id} = ctx.params
