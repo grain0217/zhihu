@@ -71,10 +71,10 @@ class AnswerCtl {
     await next()
   }
 
-  // 检查调用 update接口的用户是否为回答者?????没看懂 ctx.state.anwser是什么东西？？？
+  // 检查调用 update接口的用户是否为该答案的回答者
   async checkAnswer (ctx, next) {
     const { answer } = ctx.state
-    if (answer.toString() !== ctx.state.user._id) ctx.throw(403, '没有权限')
+    if (answer.toString() !== ctx.state.user._id) ctx.throw(403, '你没有权限操作此答案')
     await next()
   }
 }
