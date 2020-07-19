@@ -12,6 +12,6 @@ const commentSchema = new Schema({
   // 只有二级评论才有
   rootCommentId: { type: Schema.Types.ObjectId },
   replyTo: { type: Schema.Types.ObjectId, ref: 'User' }
-})
+}, { timestamps: true })
 
 module.exports = model('Comment', commentSchema)
