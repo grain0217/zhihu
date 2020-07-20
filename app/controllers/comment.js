@@ -61,7 +61,7 @@ class CommentCtl {
 
   // 检查评论是否存在
   async checkExist (ctx, next) {
-    const { questionId, questionId, id} = ctx.params
+    const { questionId, id} = ctx.params
     const isValid = mongoose.Types.ObjectId.isValid(questionId) && mongoose.Types.ObjectId.isValid(questionId) && mongoose.Types.ObjectId(id)
     if (!isValid) ctx.throw(404, 'id非法')
     const comment = await commentModel.findById(id).select('+question+answer')
